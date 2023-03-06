@@ -11,6 +11,23 @@ String eventsModelToJson(EventsModel data) => json.encode(data.toJson());
 
 class EventsModel {
   EventsModel({
+    required this.appInfo,
+  });
+
+  List<AppInfo> appInfo;
+
+  factory EventsModel.fromJson(Map<String, dynamic> json) => EventsModel(
+        appInfo:
+            List<AppInfo>.from(json["AppInfo"].map((x) => AppInfo.fromJson(x))),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "AppInfo": List<dynamic>.from(appInfo.map((x) => x.toJson())),
+      };
+}
+
+class AppInfo {
+  AppInfo({
     required this.id,
     required this.appName,
     required this.desc,
@@ -24,9 +41,9 @@ class EventsModel {
     required this.eventDate,
     required this.endDate,
     required this.eventLocation,
-    required this.longitude,
-    required this.lattitude,
-    required this.accessCode,
+    // this.longitude,
+    // this.lattitude,
+    // this.accessCode,
     required this.createdAt,
     required this.updatedAt,
     required this.appSpecificUsersId,
@@ -46,15 +63,15 @@ class EventsModel {
   String eventDate;
   String endDate;
   String eventLocation;
-  String longitude;
-  String lattitude;
-  String accessCode;
+  // String? longitude;
+  // String? lattitude;
+  // String? accessCode;
   DateTime createdAt;
   DateTime updatedAt;
   String appSpecificUsersId;
   String appinfoId;
 
-  factory EventsModel.fromJson(Map<String, dynamic> json) => EventsModel(
+  factory AppInfo.fromJson(Map<String, dynamic> json) => AppInfo(
         id: json["id"],
         appName: json["app_name"],
         desc: json["desc"],
@@ -68,9 +85,9 @@ class EventsModel {
         eventDate: json["event_date"],
         endDate: json["end_date"],
         eventLocation: json["event_location"],
-        longitude: json["longitude"],
-        lattitude: json["lattitude"],
-        accessCode: json["access_code"],
+        // longitude: json["longitude"],
+        // lattitude: json["lattitude"],
+        // accessCode: json["access_code"],
         createdAt: DateTime.parse(json["created_at"]),
         updatedAt: DateTime.parse(json["updated_at"]),
         appSpecificUsersId: json["app_specific_users_id"],
@@ -91,9 +108,9 @@ class EventsModel {
         "event_date": eventDate,
         "end_date": endDate,
         "event_location": eventLocation,
-        "longitude": longitude,
-        "lattitude": lattitude,
-        "access_code": accessCode,
+        // "longitude": longitude,
+        // "lattitude": lattitude,
+        // "access_code": accessCode,
         "created_at": createdAt.toIso8601String(),
         "updated_at": updatedAt.toIso8601String(),
         "app_specific_users_id": appSpecificUsersId,
