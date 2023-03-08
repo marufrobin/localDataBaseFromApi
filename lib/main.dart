@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:test1/database/events_local_database.dart';
 import 'package:test1/homePage.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MultiProvider(providers: [
+    ChangeNotifierProvider(
+      create: (context) => EventsLocalDataBase(),
+    )
+  ], child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
