@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
@@ -11,6 +13,7 @@ class EventsLocalDataBase with ChangeNotifier {
     return await openDatabase(path, version: 1, onCreate: onCreateFunction);
   }
 
+  static const tableName = 'events';
   static Future onCreateFunction(Database db, int version) async {
     final idType = 'INTEGER PRIMARY KEY AUTOINCREMENT';
     final textType = 'TEXT';
@@ -18,7 +21,7 @@ class EventsLocalDataBase with ChangeNotifier {
     final integerType = 'INTEGER NOT NULL';
     final realType = 'REAL NOT NULL';
 
-    final eventSql = '''CREATE TABLE events(
+    final eventSql = '''CREATE TABLE $tableName(
         id $idType, 
         event_name $textType, 
         event_splashImageUrl $textType,
@@ -37,6 +40,7 @@ class EventsLocalDataBase with ChangeNotifier {
     var result = await db.insert('events', localEventModel.toMap());
     print("result that are inserted: $result");
     // notifyListeners();
+
     return result;
   }
 
@@ -50,12 +54,23 @@ class EventsLocalDataBase with ChangeNotifier {
         ? queryName.map((e) => LocalEventModel.fromMap(e)).toList()
         : [];
     notifyListeners();
+    print("all the data :${readData.length}");
     return readData;
-
     /*queryName.forEach((element) {
       var result = LocalEventModel.fromMap(element);
       eventLocalDataList.add(result);
     });
     return eventLocalDataList;*/
+  }
+
+  static Future<int> updateIndex(LocalEventModel localEventModel) async {
+    Database db = await EventsLocalDataBase.databasepath();
+    return await db.update(tableName, localEventModel.toMap(),
+        where: 'id=?', whereArgs: [localEventModel.id]);
+  }
+
+  static Future<int> deleteEventsDataBase() async {
+    Database db = await EventsLocalDataBase.databasepath();
+    return await db.delete(tableName);
   }
 }

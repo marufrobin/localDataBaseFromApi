@@ -5,8 +5,9 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:test1/Model/event_model.dart';
-import 'package:test1/Model/local_events_model.dart';
 import 'package:test1/database/events_local_database.dart';
+
+import 'Model/local_events_model.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key? key}) : super(key: key);
@@ -32,8 +33,12 @@ class _HomePageState extends State<HomePage> {
       var outputFormat = DateFormat('MM/dd/yyyy HH:mm');
       if (data.statusCode == 200) {
         final jsonData = json.decode(data.body);
+
         for (var tempEvent in jsonData["AppInfo"]) {
           //event date
+          print(
+              "Printing *****************************************************");
+
           DateTime eventDate, endDate;
 
           if (tempEvent['event_date'] != null) {
@@ -92,22 +97,31 @@ class _HomePageState extends State<HomePage> {
             eventName: tempEvent['app_name'],
             eventLocation: tempEvent["event_location"],
             eventData: tempEvent["event_date"],
-            // eventLattitude: tempEvent['lattitude'],
-            // eventLongitude: tempEvent['longitude'],
-            // eventSplashImageUrl: tempEvent['splash_screen_file_path'],
-            // eventLogoImageUrl: tempEvent['logo_file_path'],
-            // appOverViewDescription: tempEvent['desc'],
+            eventLattitude: tempEvent['lattitude'] ?? "",
+            eventLongitude: tempEvent['longitude'] ?? "",
+            eventSplashImageUrl: tempEvent['splash_screen_file_path'] ?? "",
+            eventLogoImageUrl: tempEvent['logo_file_path'] ?? "",
+            appOverViewDescription: tempEvent['desc'] ?? "",
           ));
-          print(tempEvent['lattitude']);
-          setState(() {
-            listEvents.add(tempEvent);
-          });
-          eventsModel = EventsModel.fromJson(events);
+          EventsLocalDataBase.updateIndex(LocalEventModel(
+            id: 100,
+            eventName: " new",
+            eventLocation: "rrr",
+            eventData: "sdffds",
+            eventLattitude: "dfsag",
+            eventLongitude: "dagasds",
+            eventSplashImageUrl: "adsgadsd",
+            eventLogoImageUrl: "adgdasgasdrewgwe",
+            appOverViewDescription: "jknuihu",
+          ));
+          setState(() {});
+          print(
+              "Printing ----------------------------------------------------");
           print("data from temp: ${tempEvent}");
         }
-        print("All the data");
-        print(events);
-        setState(() {});
+        // print("All the data");
+        // print(events);
+        // setState(() {});
 
         // return events;
       }
@@ -135,22 +149,47 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     final provider = Provider.of<EventsLocalDataBase>(context, listen: false);
     return Scaffold(
-        floatingActionButton: FloatingActionButton(
-          onPressed: () async {
-            getUserData(token);
-            // provider.insertEventData(LocalEventModel(
-            //     id: 36,
-            //     eventName: " 122315",
-            //     eventLocation: "savar",
-            //     eventData: "22/22/23"));
-            // setState(() {});
-            /*await EventsLocalDataBase.insertEventData(LocalEventModel(
-                id: 8,
-                eventName: "Maruf ahmed ",
-                eventLocation: "savar",
-                eventData: "22/22/23"));*/
-          },
-          child: Icon(Icons.add),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+        floatingActionButton: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            FloatingActionButton(
+                onPressed: () {
+                  EventsLocalDataBase.deleteEventsDataBase();
+                  setState(() {});
+                },
+                child: Icon(Icons.delete_forever_rounded)),
+            FloatingActionButton(
+              onPressed: () async {
+                getUserData(token);
+
+                /* EventsLocalDataBase.insertEventData(LocalEventModel(
+                  id: 116,
+                  eventName: "newnewnewnewnewnew new newnewnewnewnewnew",
+                  eventLocation: "rrr",
+                  eventData: "sdffds",
+                  eventLattitude: "dfsag",
+                  eventLongitude: "dagasds",
+                  eventSplashImageUrl: "adsgadsd",
+                  eventLogoImageUrl: "adgdasgasdrewgwe",
+                  appOverViewDescription: "jknuihu",
+                ));*/
+                // provider.insertEventData(LocalEventModel(
+                //     id: 36,
+                //     eventName: " 122315",
+                //     eventLocation: "savar",
+                //     eventData: "22/22/23"));
+                // setState(() {});
+                /*await EventsLocalDataBase.insertEventData(LocalEventModel(
+                    id: 8,
+                    eventName: "Maruf ahmed ",
+                    eventLocation: "savar",
+                    eventData: "22/22/23"));*/
+                setState(() {});
+              },
+              child: Icon(Icons.add),
+            ),
+          ],
         ),
         appBar: AppBar(
           elevation: 0,
@@ -167,7 +206,7 @@ class _HomePageState extends State<HomePage> {
                 child: Text("${snapshot.data}"),
               );*/
                   ListView(
-                children: snapshot.data!.map((e) => Text("${e.id}")).toList(),
+                children: snapshot.data!.map((e) => Text(e.eventName)).toList(),
               );
             },
           ),
